@@ -1,0 +1,44 @@
+<!doctype html>
+
+<meta charset="utf-8" />
+<title>Pong</title>
+
+<style>
+  body {
+    background: black;
+    color: white;
+    text-align: center;
+  }
+  #player svg {
+    border: 2px solid white;
+  }
+</style>
+
+<body>
+
+  <h1>Pong</h1>
+
+  <p>Top paddle: A / S <br>Bottom paddle: Left Arrow / Right Arrow</p>
+
+  <div id="player"></div>
+
+  <script src="../lib/bonsai.iframe.min.js"></script>
+
+  <script type="bs" id="bs">
+
+    (new Pong).start();
+
+  </script>
+
+  <script>
+
+    bonsai.run(document.getElementById('player'), 'pong.js', {
+      code: document.getElementById('bs').innerHTML,
+      height: 350,
+      width: 500,
+      framerate: 50
+    });
+
+  </script>
+
+</body>
