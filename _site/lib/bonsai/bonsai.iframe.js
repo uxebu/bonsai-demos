@@ -2826,8 +2826,9 @@
   };
   module$asset$raw_handler.module$exports = RawHandler$$module$asset$raw_handler;
   module$asset$raw_handler.module$exports && (module$asset$raw_handler = module$asset$raw_handler.module$exports);
-  var module$asset$font_handler = {}, AssetHandler$$module$asset$font_handler = module$asset$asset_handler, RawHandler$$module$asset$font_handler = module$asset$raw_handler, tools$$module$asset$font_handler = module$tools, mimeToFormat$$module$asset$font_handler = FontHandler$$module$asset$font_handler.mimeToFormat = {"application/x-font-woff":"woff", "font/opentype":"opentype", "image/svg+xml":"svg", "application/x-font-ttf":"ttf", "application/vnd.ms-fontobject":"eot"}, formatToMime$$module$asset$font_handler = 
-  FontHandler$$module$asset$font_handler.formatToMime = {eot:"application/vnd.ms-fontobject", woff:"application/x-font-woff", opentype:"font/opentype", otf:"font/opentype", svg:"image/svg+xml", ttf:"application/x-font-ttf"}, styleElement$$module$asset$font_handler;
+  var module$asset$font_handler = {}, AssetHandler$$module$asset$font_handler = module$asset$asset_handler, RawHandler$$module$asset$font_handler = module$asset$raw_handler, tools$$module$asset$font_handler = module$tools, mimeToFormat$$module$asset$font_handler = FontHandler$$module$asset$font_handler.mimeToFormat = {woff:"woff", "font/woff":"woff", "application/x-woff":"woff", "application/x-font-woff":"woff", otf:"opentype", "font/otf":"opentype", "font/opentype":"opentype", "application/x-font-otf":"opentype", 
+  "application/x-font-opentype":"opentype", ttf:"truetype", "font/ttf":"truetype", "font/truetype":"truetype", "application/x-font-ttf":"truetype", "application/x-font-truetype":"truetype", svg:"svg", "image/svg+xml":"svg", "application/vnd.ms-fontobject":"eot"}, formatToMime$$module$asset$font_handler = FontHandler$$module$asset$font_handler.formatToMime = {eot:"application/vnd.ms-fontobject", woff:"application/x-font-woff", otf:"font/opentype", svg:"image/svg+xml", ttf:"application/x-font-ttf"}, 
+  styleElement$$module$asset$font_handler;
   FontHandler$$module$asset$font_handler.fontIDs = {};
   FontHandler$$module$asset$font_handler.prefix = "bs_" + (new Date).getTime() + "_";
   function FontHandler$$module$asset$font_handler() {
@@ -2843,10 +2844,8 @@
   FontHandler$$module$asset$font_handler.prototype.loadResource = function(a, b, c) {
     var d = this, e = a.src;
     /^data:/.test(e) ? b(e) : (new RawHandler$$module$asset$font_handler(e)).on("load", function() {
-      var c = a.type in mimeToFormat$$module$asset$font_handler ? mimeToFormat$$module$asset$font_handler[a.type] : a.type in formatToMime$$module$asset$font_handler ? a.type : "";
-      if(!c) {
-        throw Error("Resource type of " + a.type + " is not supported by the Font type handler");
-      }
+      var c;
+      a.type in mimeToFormat$$module$asset$font_handler ? c = mimeToFormat$$module$asset$font_handler[a.type] : (c = a.type, console.warn("Resource type of " + a.type + " might be not supported by the Font type handler"));
       d.fontFormats.push({uri:e, format:c});
       b()
     }).on("error", function() {
