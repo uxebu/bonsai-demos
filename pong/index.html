@@ -1,0 +1,29 @@
+---
+title: Pong
+layout: demo
+---
+
+<style>
+#player svg {
+  border: 2px solid white;
+}
+</style>
+
+<p>Top paddle: A / S <br>Bottom paddle: Left Arrow / Right Arrow</p>
+
+<div id="player"></div>
+
+<script type="bs" id="bs">
+  (new Pong).start();
+</script>
+
+<script>
+
+  bonsai.run(document.getElementById('player'), 'pong.js', {
+    code: document.getElementById('bs').innerHTML,
+    height: 350,
+    width: 500,
+    framerate: 50
+  });
+
+</script>
