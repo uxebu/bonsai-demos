@@ -13,9 +13,12 @@ h1 {
 	padding: 20px;
 }
 
+a {
+	color: #FFF;
+}
+
 h1 a {
 	text-decoration: none;
-	color: #FFF;
 }
 
 h2, h3 {
