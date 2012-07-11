@@ -61,6 +61,7 @@ p {
 }
 
 #content {
+  position: relative;
 	padding: 30px;
 	margin-left: 200px;
 	width: 700px;

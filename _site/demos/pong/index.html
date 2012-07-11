@@ -21,6 +21,10 @@
 				
 			
 				
+					<li><a  href="/demos/rainbow/index.html">Rainbow</a></li>
+				
+			
+				
 			
 		</ul>
 	</div>
@@ -29,12 +33,14 @@
 
 	<div id="content">
 		<style>
-#player svg {
-  border: 2px solid white;
+#player {
+  background: #000;
+  position: absolute;
+  box-shadow: 0 0 20px #000;
 }
 </style>
 
-<p>Top paddle: A / S <br>Bottom paddle: Left Arrow / Right Arrow</p>
+<p>Control the paddle: Left Arrow / Right Arrow</p>
 
 <div id="player"></div>
 
@@ -50,6 +56,13 @@
     width: 500,
     framerate: 50
   });
+
+  window.onresize = function() {
+    player.style.left = (window.innerWidth - 202)/2 - 250 + 'px';
+    player.style.top = window.innerHeight/2 - 175 + 'px';
+  };
+
+  window.onresize();
 
 </script>
 
