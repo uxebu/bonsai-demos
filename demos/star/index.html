@@ -1,0 +1,82 @@
+---
+title: Star
+layout: demo
+---
+
+<style>
+#content {
+  padding: 0;
+}
+#player {
+  background: #000;
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  box-shadow: 0 0 20px #000;
+}
+#credit {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+}
+</style>
+
+<div id="player"></div>
+
+<script type="bs" id="bs">
+
+x = 250;
+y = 250;
+
+var dark = true;
+var hue = 0;
+
+function make() {
+
+  hue = hue + .005 > 1 ? 0 : hue + .005; // vary hue slightly with each star
+  var baseColor = color('red').hue(hue);
+  var c = dark ? baseColor.darker(.2) : baseColor.lighter(.3);
+  dark = !dark;
+
+  var s = new Star(x, y, 150, 5, 0).fill(c).addTo(stage);
+
+  s.animate('3s', {
+    factor: 2,
+    rotation: Math.PI/5
+  }, {
+    easing: 'sineInOut',
+    onEnd: function() {
+      s.remove();
+    }
+  });
+
+  setTimeout(make, 100);
+
+}
+
+make();
+
+</script>
+
+<script>
+
+  var player = document.getElementById('player');
+
+  var w = 500;
+  var h = 500;
+
+  var b = bonsai.run(player, {
+    code: document.getElementById('bs').innerHTML,
+    height: h,
+    width: w,
+    framerate: 40
+  });
+
+  window.onresize = function() {
+    player.style.left = (window.innerWidth - 202)/2 - w/2 + 'px';
+    player.style.top = window.innerHeight/2 - h/2 + 'px';
+  };
+
+  window.onresize();
+
+</script>
