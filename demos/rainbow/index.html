@@ -30,14 +30,15 @@ var height = 400;
 var sectors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet'];
 
 var sectorWidth = width / sectors.length;
+  // make bars at top of stage:
 for (var s = 0, l = sectors.length; s < l; ++s) {
-  Shape.rect(s * sectorWidth, 0, sectorWidth, 20).attr('fillColor', sectors[s]).addTo(stage);
+  new Rect(s * sectorWidth, 0, sectorWidth, 20).attr('fillColor', sectors[s]).addTo(stage);
 }
 
 var blobs = [];
 
 function makeBlob(x, y) {
-  var t = Shape.rect(0, 0, 12, 12, 3).attr(
+  var t = new Rect(0, 0, 12, 12, 3).attr(
     'fillColor',
     color( sectors[0|x/(width/sectors.length)] ).randomize('h', .1).randomize('l')
   ).addTo(stage);

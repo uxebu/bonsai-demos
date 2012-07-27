@@ -98,7 +98,7 @@ var Pong = (function(){
     this.config = config;
     this.width = config.width;
     this.height = config.height;
-    this.bs = Shape.rect(0, 0, this.width, this.height, 5).attr(config.attr).addTo(stage);
+    this.bs = new Rect(0, 0, this.width, this.height, 5).attr(config.attr).addTo(stage);
     this.x = position.x;
     this.y = position.y;
     this.pong = pong;
@@ -118,7 +118,7 @@ var Pong = (function(){
     this.width = config.width;
     this.height = config.height;
 
-    this.bs = Shape.rect(0, 0, this.width, this.height, this.width/2).attr(config.attr);
+    this.bs = new Rect(0, 0, this.width, this.height, this.width/2).attr(config.attr);
 
     this.deltaY = Math.floor(Math.random() * pong.ballSpeed) + 1;
     this.deltaX = pong.ballSpeed - this.deltaY;
