@@ -42,7 +42,7 @@ function make() {
 
   s.animate('3s', {
     factor: 2,
-    rotation: Math.PI/5
+    rotation: Math.PI / 5
   }, {
     easing: 'sineInOut',
     onEnd: function() {
@@ -50,11 +50,13 @@ function make() {
     }
   });
 
-  setTimeout(make, 100);
-
 }
 
-make();
+stage.on('tick', function(e, f) {
+  if (f % 4 === 0) { // every fourth frame
+    make();
+  }
+});
 
 </script>
 
