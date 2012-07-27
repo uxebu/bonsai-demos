@@ -123,18 +123,8 @@ PieChart.prototype = {
 
     label.attr({ opacity: 0 });
 
-    var startGradient = gradient.linear(
-      // Get half-way between start&end then -90 for gradients
-      (start+((end-start)/2)) / (Math.PI/180) - 90,
-      [kolor.lighter(.1), kolor.darker(.2)]
-    );
-    var endGradient = startGradient.clone();
-    endGradient.stops.forEach(function(s) {
-      s[0] = color(s[0]).lighter(.1);
-    });
-
     s.line('#FFF', 3);
-    s.fill(startGradient);
+    s.fill(kolor);
 
     s.attr({
       endAngle: start,
@@ -149,7 +139,7 @@ PieChart.prototype = {
       });
       s.animate('.2s', {
         radius: 170,
-        fillGradient: endGradient
+        fillColor: kolor.lighter(.1)
       }, {
         easing: 'sineOut'
       });
@@ -162,7 +152,7 @@ PieChart.prototype = {
       });
       s.animate('.2s', {
         radius: 150,
-        fillGradient: startGradient
+        fillColor: kolor
       });
     }
 
