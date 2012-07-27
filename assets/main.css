@@ -1,5 +1,5 @@
 body {
-	font: 1em sans-serif;
+	font: .8em sans-serif;
 	background: #111;
 	color: #FFF;
 }
@@ -7,18 +7,6 @@ body {
 body, pre, p, h1, h2, h3 {
 	margin: 0;
 	padding: 0;
-}
-
-h1 {
-	padding: 20px;
-}
-
-a {
-	color: #FFF;
-}
-
-h1 a {
-	text-decoration: none;
 }
 
 h2, h3 {
@@ -30,39 +18,123 @@ p {
 }
 
 #nav {
-	float: left;
+	position: fixed;
+	left: 0;
+	top: 0;
 	width: 200px;
 	background: #222;
-	border-right: 2px solid #333;
-	color: #FFF;
+	border-right: 2px solid #444;
+	color: #222831;
+	border-bottom: 2px solid #444;
 	height: 100%;
-	position: fixed;
 }
 
 #nav ul {
-	border-top: 1px solid #333;
 	padding: 0;
 	margin: 0;
+	overflow: hidden;
 }
 
-#nav ul a {
+#nav .menuHeading {
+	text-transform: uppercase;
+	font-size: 1.2em;
+	background: #222831;
+	padding: .7em;
+	color: #FFF;
+	border-bottom: 1px solid #444;
+	text-decoration: none;
+	font-weight: 700;
+	display: block;
+}
+
+#nav a.menuHeading:hover, #nav a.menuHeading:focus /* js enhanced */ {
+	background: #222831;
+	text-decoration: underline;
+}
+
+#nav h1 a {
+	padding: 20px;
+}
+
+#nav a {
 	padding: 9px 12px;
 	display: block;
-	border-top: 1px solid #000;
-	border-bottom: 1px solid #333;
+	border-top: 1px solid #666;
+	border-bottom: 1px solid #444;
 	color: #FFF;
 	text-decoration: none;
 	font-weight: 700;
 }
 
 #nav a:focus, #nav a:hover, #nav a.active {
+	background: #5AB45C;
+	color: white;
+}
+
+#relatedLinks {
+	position: fixed;
+	top: 20px;
+	right: 30px;
+	padding: 10px;
 	background: #EEE;
-	color: #000;
+	border-radius: 5px;
+}
+
+#relatedLinks h3 {
+	font-size: 1em;
+	display: inline;
 }
 
 #content {
-  position: relative;
-	padding: 30px;
+	padding: 0 30px 30px;
 	margin-left: 200px;
-	width: 700px;
+	position: relative;
+}
+
+#content h1 {
+	margin: 0;
+	padding: 20px 0;
+}
+
+#content a {
+	color: #222831;
+	background: #EEE;
+	text-decoration: underline;
+	font-weight: 700;
+}
+
+#content a:hover, #content a:focus {
+	background: #222831;
+	color: #FFF;
+}
+
+/** Within-content **/
+
+#content a.overview {
+	padding: 5px 10px;
+	margin: 0 3px;
+	border-radius: 3px;
+	background: #5AB45C;
+	color: #FFF;
+	text-decoration: none;
+	font-size: .8em;
+}
+
+#content a.overview:hover, #content a.overview:focus {
+	background: #222831;
+}
+
+/** code **/
+
+
+code {
+	font-size: 1em;
+	font-family: "Bitstream Vera Sans Mono", "Consolas", "Lucida Console", monospace, mono;
+}
+
+.highlight {
+	padding: 10px;
+	border: 1px dotted #CCC;
+	border-left: 5px solid #CCC;
+	margin: .7em 0;
 }
