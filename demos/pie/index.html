@@ -1,0 +1,242 @@
+---
+title: Pie Chart
+layout: demo
+---
+
+<style>
+#content {
+  padding: 0;
+}
+#player {
+  background: #000;
+  position: absolute;
+  width: 700px;
+  height: 400px;
+  box-shadow: 0 0 20px #000;
+}
+#credit {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+}
+</style>
+
+<div id="player"></div>
+
+<script type="bs" id="bs">
+
+function Sector(x, y, radius, startAngle, endAngle) {
+  SpecialAttrPath.call(this, {
+    radius: 0,
+    startAngle: startAngle,
+    endAngle: endAngle
+  });
+  this.attr({
+    x: x,
+    y: y,
+    radius: radius,
+    startAngle: startAngle,
+    endAngle: endAngle
+  });
+}
+
+Sector.prototype = Object.create(SpecialAttrPath.prototype);
+Sector.prototype._make = function() {
+
+  var attr = this._attributes,
+      radius = attr.radius,
+      startAngle = attr.startAngle,
+      endAngle = attr.endAngle;
+
+  var startX, startY, endX, endY;
+  var diffAngle = Math.abs(endAngle - startAngle);
+
+  this.startX = startX = radius * Math.cos(startAngle);
+  this.startY = startY = radius * Math.sin(startAngle);
+  if (diffAngle < Math.PI*2) {
+    endX = radius * Math.cos(endAngle);
+    endY = radius * Math.sin(endAngle);
+  } else { // angles differ by more than 2*PI: draw a full circle
+    endX = startX;
+    endY = startY - .0001;
+  }
+
+  this.endX = endX;
+  this.endY = endY;
+
+  this.radiusExtentX = radius * Math.cos(startAngle + (endAngle - startAngle)/2);
+  this.radiusExtentY = radius * Math.sin(startAngle + (endAngle - startAngle)/2);
+
+  return this.moveTo(0, 0)
+    .lineTo(startX, startY)
+    .arcTo(radius, radius, 0, (diffAngle < Math.PI) ? 0 : 1, 1, endX, endY)
+    .lineTo(0, 0);
+
+};
+
+Sector.prototype.getDimensions = function() {
+  var x = this.attr('x'),
+      y = this.attr('y'),
+      left = Math.min(x, x + this.startX, x + this.endX, x + this.radiusExtentX),
+      top = Math.min(y, y + this.startY, y + this.endY, y + this.radiusExtentY),
+      right = Math.max(x, x + this.startX, x + this.endX, x + this.radiusExtentX),
+      bottom = Math.max(y, y + this.startY, y + this.endY, y + this.radiusExtentY);
+  console.log(y, y + this.startY, y + this.endY, y + this.radiusExtentY)
+  return {
+    left: left,
+    top: top,
+    width: right - left,
+    height: bottom - top
+  };
+};
+
+
+PieChart.BASE_COLOR = color('red');
+
+function PieChart(data) {
+  this.angle = 0;
+  this.labelY = 30;
+  this.kolor = PieChart.BASE_COLOR.clone();
+  var n = 0;
+  for (var i in data) {
+    this.slice(i, data[i], n++);
+  }
+}
+
+PieChart.prototype = {
+  slice: function(name, value, i) {
+
+    var start = this.angle,
+        end = start + (Math.PI*2) * value/100,
+        // Increase hue by .1 with each slice (max of 10 will work)
+        kolor = this.kolor = this.kolor.clone().hue(this.kolor.hue()+.1);
+
+    var s = new Sector(
+      400, 200, 150,
+      start,
+      end
+    );
+
+    var animDelay = (i * 200) + 'ms';
+
+    var label = this.label(name, value, kolor);
+
+    label.attr({ opacity: 0 });
+
+    var startGradient = gradient.linear(
+      // Get half-way between start&end then -90 for gradients
+      (start+((end-start)/2)) / (Math.PI/180) - 90,
+      [kolor.lighter(.1), kolor.darker(.2)]
+    );
+    var endGradient = startGradient.clone();
+    endGradient.stops.forEach(function(s) {
+      s[0] = color(s[0]).lighter(.1);
+    });
+
+    s.line('#FFF', 3);
+    s.fill(startGradient);
+
+    s.attr({
+      endAngle: start,
+      radius: 0
+    }).addTo(stage).on('mouseover', over).on('mouseout', out);
+    label.on('mouseover', over).on('mouseout', out);
+
+    function over() {
+      label.text.attr('fontWeight', 'bold');
+      label.animate('.2s', {
+        x: 40
+      });
+      s.animate('.2s', {
+        radius: 170,
+        fillGradient: endGradient
+      }, {
+        easing: 'sineOut'
+      });
+    }
+
+    function out() {
+      label.text.attr('fontWeight', '');
+      label.animate('.2s', {
+        x: 30
+      });
+      s.animate('.2s', {
+        radius: 150,
+        fillGradient: startGradient
+      });
+    }
+
+    s.animate('.4s', {
+      radius: 150,
+      startAngle: start,
+      endAngle: end
+    }, {
+      easing: 'sineOut',
+      delay: animDelay
+    });
+
+    label.animate('.4s', {
+      opacity: 1
+    }, { delay: animDelay });
+
+    this.angle = end;
+  },
+
+  label: function(name, v, fill) {
+
+    var g = new Group().attr({
+      x: 30,
+      y: this.labelY,
+      cursor: 'pointer'
+    });
+
+    var t = new Text(name + ' (' + v + '%)').addTo(g);
+    var r = new Rect(0, 0, 20, 20, 5).fill(fill).addTo(g);
+
+    t.attr({
+      x: 30,
+      y: 17,
+      textFillColor: 'white',
+      fontFamily: 'Arial',
+      fontSize: '14'
+    });
+
+    g.addTo(stage);
+    this.labelY += 30;
+
+    g.text = t;
+
+    return g;
+  }
+};
+
+new PieChart({
+  Coke: 5,
+  Lemonade: 20,
+  Water: 30,
+  Beer: 8,
+  Coffee: 19,
+  Juice: 18
+})
+
+</script>
+
+<script>
+
+  var player = document.getElementById('player');
+
+  var b = bonsai.run(player, {
+    code: document.getElementById('bs').innerHTML,
+    height: 400,
+    width: 700,
+    framerate: 50
+  });
+
+  window.onresize = function() {
+    player.style.left = (window.innerWidth - 202)/2 - 350 + 'px';
+    player.style.top = window.innerHeight/2 - 200 + 'px';
+  };
+
+  window.onresize();
+
+</script>

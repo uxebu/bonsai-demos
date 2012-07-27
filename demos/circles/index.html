@@ -43,7 +43,7 @@ for (var i = 0; i < circles; ++i) {
 
     circle = bonsai.Path.
       circle(x, y, radius).
-      attr({fillColor: color('red').randomize('h').darker(.1), fillGradient: bonsai.gradient.radial(['#FFFFFF88', '#FFFFFF00'])});
+      attr({fillColor: 'random', fillGradient: bonsai.gradient.radial(['#FFFFFF88', '#FFFFFF00'])});
     circle.x = x;
     circle.y = y;
     stage.addChild(circle);

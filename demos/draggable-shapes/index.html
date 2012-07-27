@@ -1,0 +1,94 @@
+---
+title: Draggable shapes
+layout: demo
+---
+
+<style>
+#content {
+  padding: 0;
+}
+#player {
+  background: #000;
+  position: absolute;
+  width: 700px;
+  height: 500px;
+  box-shadow: 0 0 20px #000;
+}
+#credit {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+}
+</style>
+
+<div id="player"></div>
+
+<script type="bs" id="bs">
+
+rand = Math.random;
+
+var size = 25;
+
+for (var i = 0; i < 300; ++i) {
+  setTimeout(function() {
+    var r, x, y, thisSize = rand() * size + size;
+    switch (0 | Math.random()*3) {
+      case 0:
+        r = new Rect(0, 0, 0, 0);
+        break;
+      case 1:
+        r = new Star(0, 0, 0, 0 | rand() * 10 + 3, rand() + 1);
+        break;
+      case 2:
+        r = new Circle(0, 0, 0);
+    }
+    r.fill(color('red').randomize('h')).line('#000', 2).addTo(stage).attr({
+      x: rand() * 700,
+      y: rand() * 500
+    }).on('multi:pointerdown', function(e) {
+      // Catch new x/y at beginning of drag
+      x = this.attr('x');
+      y = this.attr('y');
+      r.addTo(r.parent);
+    })
+    .on('multi:drag', function(e){
+      this.attr({
+        x: x + e.diffX,
+        y: y + e.diffY
+      });
+    })
+    .emit('multi:pointerdown')
+    .animate('.5s', {
+      radius: thisSize,
+      width: thisSize,
+      height: thisSize
+    }, {
+      easing: 'elasticOut'
+    });
+  }, i * 10);
+}
+
+</script>
+
+<script>
+
+  var player = document.getElementById('player');
+
+  var w = 700;
+  var h = 500;
+
+  var b = bonsai.run(player, {
+    code: document.getElementById('bs').innerHTML,
+    height: h,
+    width: w,
+    framerate: 40
+  });
+
+  window.onresize = function() {
+    player.style.left = (window.innerWidth - 202)/2 - w/2 + 'px';
+    player.style.top = window.innerHeight/2 - h/2 + 'px';
+  };
+
+  window.onresize();
+
+</script>
