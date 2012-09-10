@@ -29,7 +29,7 @@ rand = Math.random;
 
 var size = 25;
 
-for (var i = 0; i < 300; ++i) {
+for (var i = 0; i < 100; ++i) {
   setTimeout(function() {
     var r, x, y, thisSize = rand() * size + size;
     switch (0 | Math.random()*3) {
@@ -42,7 +42,7 @@ for (var i = 0; i < 300; ++i) {
       case 2:
         r = new Circle(0, 0, 0);
     }
-    r.fill(color('red').randomize('h')).line('#000', 2).addTo(stage).attr({
+    r.fill(color('red').randomize('h')).stroke('#000', 2).addTo(stage).attr({
       x: rand() * 700,
       y: rand() * 500
     }).on('multi:pointerdown', function(e) {
@@ -65,7 +65,7 @@ for (var i = 0; i < 300; ++i) {
     }, {
       easing: 'elasticOut'
     });
-  }, i * 10);
+  }, i * 50);
 }
 
 </script>

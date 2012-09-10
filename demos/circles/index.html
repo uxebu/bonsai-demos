@@ -27,7 +27,7 @@ layout: demo
 
 var centerX = 250,
     centerY = 250,
-    circles = 180,
+    circles = 140,
     distance = 180,
     frames = 14,
     radiusMin = 10,
@@ -43,7 +43,7 @@ for (var i = 0; i < circles; ++i) {
 
     circle = bonsai.Path.
       circle(x, y, radius).
-      attr({fillColor: 'random', fillGradient: bonsai.gradient.radial(['#FFFFFF88', '#FFFFFF00'])});
+      attr({fillColor: 'random'});
     circle.x = x;
     circle.y = y;
     stage.addChild(circle);
