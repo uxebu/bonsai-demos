@@ -15,14 +15,9 @@ layout: demo
 
 <div id="player"></div>
 
-<script type="bs" id="bs">
-  (new Pong).start();
-</script>
-
 <script>
 
   bonsai.run(document.getElementById('player'), 'pong.js', {
-    code: document.getElementById('bs').innerHTML,
     height: 350,
     width: 500,
     framerate: 50

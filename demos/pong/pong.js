@@ -1,8 +1,10 @@
+var audioSprite, Pong;
+
 /**
  * PONG
  */
 
-var Pong = (function(){
+Pong = (function() {
 
   /**
    * Setup default settings
@@ -191,6 +193,9 @@ var Pong = (function(){
     newRound: function() {
 
       if (this.ball) {
+
+        playSprite(6);
+
         var oldBall = this.ball;
         oldBall.bs.animate('.5s', {
           opacity: 0
@@ -213,7 +218,7 @@ var Pong = (function(){
         onEnd: function() {
           setTimeout(function() {
             ball.start();
-          }, 1000)
+          }, 1000);
         }
       });
 
@@ -337,6 +342,8 @@ var Pong = (function(){
 
       if ( this.intersectsBall() ) {
 
+        playSprite(0);
+
         xFromPaddleCenter = (ball.x - this.x) / (this.width / 2);
         xFromPaddleCenter = xFromPaddleCenter > 0 ? Math.min(1, xFromPaddleCenter) : Math.max(-1, xFromPaddleCenter);
 
@@ -422,6 +429,7 @@ var Pong = (function(){
       }
 
       if ( this.isAtWall() ) {
+        playSprite(4);
         this.deltaX = -this.deltaX;
       }
 
@@ -443,3 +451,35 @@ var Pong = (function(){
   return Pong;
 
 })();
+
+// popup
+var popup = new Group().addTo(stage).attr({ x: 140, y: 120});
+new Rect(0, 0, 200, 100, 10)
+  .fill(gradient.linear(0, ['red', 'yellow']))
+  .stroke('green', 2)
+  .addTo(popup);
+new Text('Go!').attr({
+  textFillColor: 'white', fontFamily: 'Arial', fontSize: 60, x: 50, y: 30
+}).addTo(popup);
+
+// sound
+audioSprite = new Audio([
+  { src: 'pong.mp3' },
+  { src: 'pong.ogg' }
+]).prepareUserEvent().addTo(stage).on('load', function() {
+  popup.destroy();
+  new Pong().start();
+});
+
+var timeoutId = null;
+function playSprite(time) {
+  audioSprite.play(time);
+  clearTimeout(timeoutId);
+  timeoutId = setTimeout(function() {
+    audioSprite.pause();
+  }, 500);
+}
+
+
+
+
