@@ -1,12 +1,12 @@
 (function() {
 
-  function Button() {
+  function Button(resourcesUrl) {
     Group.call(this);
-    this.resources_url = '';
-    this.buttonUp = new Bitmap(this.resources_url + 'Button_normal.png').addTo(this);
-    this.buttonDown = new Bitmap(this.resources_url + 'Button_pressed.png').attr({y: -2}).addTo(this);
-    this.pauseGlyph = new Bitmap(this.resources_url + 'Pause_glyph.png').attr({x: 18, y: 15}).addTo(this);
-    this.playGlyph = new Bitmap(this.resources_url + 'Play_glyph.png').attr({x: 22, y: 13}).addTo(this);
+    resourcesUrl = resourcesUrl || '';
+    this.buttonUp = new Bitmap(resourcesUrl + 'Button_normal.png').addTo(this);
+    this.buttonDown = new Bitmap(resourcesUrl + 'Button_pressed.png').attr({y: -2}).addTo(this);
+    this.pauseGlyph = new Bitmap(resourcesUrl + 'Pause_glyph.png').attr({x: 18, y: 15}).addTo(this);
+    this.playGlyph = new Bitmap(resourcesUrl + 'Play_glyph.png').attr({x: 22, y: 13}).addTo(this);
     this.isPlaying = false;
     this.changeState(false);
     this.on('pointerdown', this.handleMouseDown);
@@ -30,10 +30,6 @@
     this.isPlaying = !this.isPlaying;
     this.changeState(false);
     this.emit(this.isPlaying ? 'play' : 'pause');
-  };
-
-  Button.prototype.setResourcesUrl = function(url) {
-      this.resources_url = url;
   };
 
   exports.Button = Button;
