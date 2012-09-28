@@ -1,0 +1,141 @@
+---
+title: Music
+layout: demo
+---
+
+<style>
+#content {
+  padding: 0;
+}
+#player {
+  background: #000;
+  position: absolute;
+  width: 700px;
+  height: 400px;
+  box-shadow: 0 0 20px #000;
+}
+#credit {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+}
+</style>
+
+<div id="player"></div>
+
+<script type="bs" id="bs">
+
+function Button() {
+  Group.call(this);
+  this.buttonUp = new Bitmap('Button_normal.png').addTo(this);
+  this.buttonDown = new Bitmap('Button_pressed.png').attr({y: -2}).addTo(this);
+  this.pauseGlyph = new Bitmap('Pause_glyph.png').attr({x: 18, y: 15}).addTo(this);
+  this.playGlyph = new Bitmap('Play_glyph.png').attr({x: 22, y: 13}).addTo(this);
+  this.isPlaying = false;
+  this.changeState(false);
+  this.on('pointerdown', this.handleMouseDown);
+  this.on('pointerup', this.handleMouseUp);
+}
+
+Button.prototype = Object.create(Group.prototype);
+
+Button.prototype.changeState = function(isDownState) {
+  this.buttonDown.attr('visible', isDownState);
+  this.buttonUp.attr('visible', !isDownState);
+  this.playGlyph.attr('visible', !this.isPlaying);
+  this.pauseGlyph.attr('visible', this.isPlaying);
+};
+
+Button.prototype.handleMouseDown = function(e) {
+  this.changeState(true);
+};
+
+Button.prototype.handleMouseUp = function(e) {
+  this.isPlaying = !this.isPlaying;
+  this.changeState(false);
+  this.emit(this.isPlaying ? 'play' : 'pause');
+};
+
+// SOUNDS FROM http://www.mediacollege.com/downloads/sound-effects/star-trek/tos/
+var audio = new bonsai.Audio([
+  {src: 'ClosingCredits.mp3'},
+  {src: 'ClosingCredits.ogg'}
+]).addTo(stage);
+
+audio.prepareUserEvent();
+
+var centerX = 700/2;
+var centerY = 400/2;
+
+var all = new Group().attr({
+  x: centerX - (176/2),
+  y: centerY - (176/2)
+}).addTo(stage);
+
+var disc = new Bitmap('CD.png').attr({
+  origin: new Point(88, 87.5)
+});
+var spinner = new Bitmap('Spinner.png').attr({
+  x: -5,
+  y: -5,
+  origin: new Point(94.5, 95)
+});
+var button = new Button().attr({
+  x: 59,
+  y: 59
+});
+
+var animationDisc = new Animation('.6s', {
+  rotation: Math.PI*2
+}, {
+  repeat: Infinity
+}).addSubject(disc);
+
+var animationSpinner = new Animation('45s', {
+  rotation: Math.PI*2
+}, {
+  repeat: Infinity,
+  easing: 'sineInOut'
+}).addSubject(spinner);
+
+button.on('play', function() {
+  audio.play();
+  animationDisc.play();
+  animationSpinner.play();
+});
+button.on('pause', function() {
+  audio.pause();
+  animationDisc.pause();
+  animationSpinner.pause();
+});
+
+setTimeout(function() {
+  // Replay when it ends:
+  audio.play(0);
+}, 40000)
+
+disc.addTo(all);
+spinner.addTo(all);
+button.addTo(all);
+
+</script>
+
+<script>
+
+  var player = document.getElementById('player');
+
+  var b = bonsai.run(player, {
+    code: document.getElementById('bs').innerHTML,
+    height: 400,
+    width: 700,
+    framerate: 50
+  });
+
+  window.onresize = function() {
+    player.style.left = (window.innerWidth - 202)/2 - 350 + 'px';
+    player.style.top = window.innerHeight/2 - 200 + 'px';
+  };
+
+  window.onresize();
+
+</script>
