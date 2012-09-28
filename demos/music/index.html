@@ -63,84 +63,85 @@ Button.prototype.handleMouseUp = function(e) {
 };
 
 // SOUNDS FROM http://www.mediacollege.com/downloads/sound-effects/star-trek/tos/
-var audio = new bonsai.Audio(AUDIO_SRC).addTo(stage);
+var audio = new bonsai.Audio(AUDIO_SRC).on('load', init).addTo(stage);
 
 audio.prepareUserEvent();
 
 var centerX = 700/2;
 var centerY = 400/2;
 
-var all = new Group().attr({
-  x: centerX - (176/2),
-  y: centerY - (176/2)
-}).addTo(stage);
+function init() {
 
-var disc = new Bitmap('CD.png').attr({
-  origin: new Point(88, 87.5)
-});
-var spinner = new Bitmap('Spinner.png').attr({
-  x: -5,
-  y: -5,
-  origin: new Point(94.5, 95)
-});
-var button = new Button().attr({
-  x: 59,
-  y: 59
-});
+  var all = new Group().attr({
+    x: centerX - (176/2),
+    y: centerY - (176/2)
+  }).addTo(stage);
 
-var animationDisc = new Animation('.6s', {
-  rotation: Math.PI*2
-}, {
-  repeat: Infinity
-}).addSubject(disc);
+  var disc = new Bitmap('CD.png').attr({
+    origin: new Point(88, 87.5)
+  });
+  var spinner = new Bitmap('Spinner.png').attr({
+    x: -5,
+    y: -5,
+    origin: new Point(94.5, 95)
+  });
+  var button = new Button().attr({
+    x: 59,
+    y: 59
+  });
 
-button.on('play', function() {
-  audio.play();
-  animationDisc.play();
-});
-button.on('pause', function() {
-  audio.pause();
-  animationDisc.pause();
-});
+  var animationDisc = new Animation('.6s', {
+    rotation: Math.PI*2
+  }, {
+    repeat: Infinity
+  }).addSubject(disc);
 
-var currentTime = 0;
-var lastTickTime = +new Date;
+  button.on('play', function() {
+    audio.play();
+    animationDisc.play();
+  });
+  button.on('pause', function() {
+    audio.pause();
+    animationDisc.pause();
+  });
 
-stage.on('tick', onTick);
+  var currentTime = 0;
+  var lastTickTime = +new Date;
 
-function onTick() {
-  if (button.isPlaying) {
-    // Add to currentTime on every tick (estimating where the audio is at)
-    currentTime += +new Date - lastTickTime;
+  stage.on('tick', onTick);
+
+  function onTick() {
+    if (button.isPlaying) {
+      // Add to currentTime on every tick (estimating where the audio is at)
+      currentTime += +new Date - lastTickTime;
+    }
+    lastTickTime = +new Date;
+    spinner.attr('rotation', Math.PI*2*(currentTime/AUDIO_LENGTH));
+    if (currentTime > AUDIO_LENGTH) {
+      // Fade out controls at end of audio
+      all.animate('.5s', { opacity: 0 });
+      stage.removeListener('tick', onTick);
+    }
   }
-  lastTickTime = +new Date;
-  spinner.attr('rotation', Math.PI*2*(currentTime/AUDIO_LENGTH));
-  if (currentTime > AUDIO_LENGTH) {
-    // Fade out controls at end of audio
-    all.animate('.5s', { opacity: 0 });
-    stage.removeListener('tick', onTick);
-  }
+
+  disc.addTo(all);
+  spinner.addTo(all);
+  button.addTo(all);
+
+  // Spinner scrubbing
+
+  spinner.on('drag', function(e) {
+    var x = e.stageX - centerX;
+    var y = e.stageY - centerY;
+    // Calculate angle:
+    var a = Math.atan2(y, x);
+    a += Math.PI/2; // Take quarter 
+    if (a < 0) a = Math.PI*2 + a; // Make it from 0..(Math.PI*2)
+    currentTime = a / (Math.PI*2) * AUDIO_LENGTH;
+    audio.attr('time', currentTime / 1000); 
+  });
+
 }
-
-disc.addTo(all);
-spinner.addTo(all);
-button.addTo(all);
-
-// Spinner dragging
-
-spinner.on('pointerdown', function() {
-
-}).on('drag', function(e) {
-  var x = e.stageX - centerX;
-  var y = e.stageY - centerY;
-  // Calculate angle:
-  var a = Math.atan2(y, x);
-  a += Math.PI/2; // Take quarter 
-  if (a < 0) a = Math.PI*2 + a; // Make it from 0..(Math.PI*2)
-  currentTime = a / (Math.PI*2) * AUDIO_LENGTH;
-  audio.attr('time', currentTime / 1000); 
-})
-
 </script>
 
 <script>
