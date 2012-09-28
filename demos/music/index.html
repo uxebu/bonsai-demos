@@ -25,6 +25,12 @@ layout: demo
 
 <script type="bs" id="bs">
 
+var AUDIO_SRC = [
+  {src: 'ClosingCredits.mp3'},
+  {src: 'ClosingCredits.ogg'}
+];
+var AUDIO_LENGTH = 45000;
+
 function Button() {
   Group.call(this);
   this.buttonUp = new Bitmap('Button_normal.png').addTo(this);
@@ -57,10 +63,7 @@ Button.prototype.handleMouseUp = function(e) {
 };
 
 // SOUNDS FROM http://www.mediacollege.com/downloads/sound-effects/star-trek/tos/
-var audio = new bonsai.Audio([
-  {src: 'ClosingCredits.mp3'},
-  {src: 'ClosingCredits.ogg'}
-]).addTo(stage);
+var audio = new bonsai.Audio(AUDIO_SRC).addTo(stage);
 
 audio.prepareUserEvent();
 
@@ -91,32 +94,52 @@ var animationDisc = new Animation('.6s', {
   repeat: Infinity
 }).addSubject(disc);
 
-var animationSpinner = new Animation('45s', {
-  rotation: Math.PI*2
-}, {
-  repeat: Infinity,
-  easing: 'sineInOut'
-}).addSubject(spinner);
-
 button.on('play', function() {
   audio.play();
   animationDisc.play();
-  animationSpinner.play();
 });
 button.on('pause', function() {
   audio.pause();
   animationDisc.pause();
-  animationSpinner.pause();
 });
 
-setTimeout(function() {
-  // Replay when it ends:
-  audio.play(0);
-}, 40000)
+var currentTime = 0;
+var lastTickTime = +new Date;
+
+stage.on('tick', onTick);
+
+function onTick() {
+  if (button.isPlaying) {
+    // Add to currentTime on every tick (estimating where the audio is at)
+    currentTime += +new Date - lastTickTime;
+  }
+  lastTickTime = +new Date;
+  spinner.attr('rotation', Math.PI*2*(currentTime/AUDIO_LENGTH));
+  if (currentTime > AUDIO_LENGTH) {
+    // Fade out controls at end of audio
+    all.animate('.5s', { opacity: 0 });
+    stage.removeListener('tick', onTick);
+  }
+}
 
 disc.addTo(all);
 spinner.addTo(all);
 button.addTo(all);
+
+// Spinner dragging
+
+spinner.on('pointerdown', function() {
+
+}).on('drag', function(e) {
+  var x = e.stageX - centerX;
+  var y = e.stageY - centerY;
+  // Calculate angle:
+  var a = Math.atan2(y, x);
+  a += Math.PI/2; // Take quarter 
+  if (a < 0) a = Math.PI*2 + a; // Make it from 0..(Math.PI*2)
+  currentTime = a / (Math.PI*2) * AUDIO_LENGTH;
+  audio.attr('time', currentTime / 1000); 
+})
 
 </script>
 
