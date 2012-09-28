@@ -31,37 +31,6 @@ var AUDIO_SRC = [
 ];
 var AUDIO_LENGTH = 45000;
 
-function Button() {
-  Group.call(this);
-  this.buttonUp = new Bitmap('Button_normal.png').addTo(this);
-  this.buttonDown = new Bitmap('Button_pressed.png').attr({y: -2}).addTo(this);
-  this.pauseGlyph = new Bitmap('Pause_glyph.png').attr({x: 18, y: 15}).addTo(this);
-  this.playGlyph = new Bitmap('Play_glyph.png').attr({x: 22, y: 13}).addTo(this);
-  this.isPlaying = false;
-  this.changeState(false);
-  this.on('pointerdown', this.handleMouseDown);
-  this.on('pointerup', this.handleMouseUp);
-}
-
-Button.prototype = Object.create(Group.prototype);
-
-Button.prototype.changeState = function(isDownState) {
-  this.buttonDown.attr('visible', isDownState);
-  this.buttonUp.attr('visible', !isDownState);
-  this.playGlyph.attr('visible', !this.isPlaying);
-  this.pauseGlyph.attr('visible', this.isPlaying);
-};
-
-Button.prototype.handleMouseDown = function(e) {
-  this.changeState(true);
-};
-
-Button.prototype.handleMouseUp = function(e) {
-  this.isPlaying = !this.isPlaying;
-  this.changeState(false);
-  this.emit(this.isPlaying ? 'play' : 'pause');
-};
-
 // SOUNDS FROM http://www.mediacollege.com/downloads/sound-effects/star-trek/tos/
 var audio = new bonsai.Audio(AUDIO_SRC).on('load', init).addTo(stage);
 
@@ -135,10 +104,10 @@ function init() {
     var y = e.stageY - centerY;
     // Calculate angle:
     var a = Math.atan2(y, x);
-    a += Math.PI/2; // Take quarter 
+    a += Math.PI/2; // Take quarter
     if (a < 0) a = Math.PI*2 + a; // Make it from 0..(Math.PI*2)
     currentTime = a / (Math.PI*2) * AUDIO_LENGTH;
-    audio.attr('time', currentTime / 1000); 
+    audio.attr('time', currentTime / 1000);
   });
 
 }
@@ -149,6 +118,7 @@ function init() {
   var player = document.getElementById('player');
 
   var b = bonsai.run(player, {
+    plugins: ['button.js'],
     code: document.getElementById('bs').innerHTML,
     height: 400,
     width: 700,
