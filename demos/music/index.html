@@ -32,14 +32,12 @@ var AUDIO_SRC = [
 var AUDIO_LENGTH = 45000;
 
 // SOUNDS FROM http://www.mediacollege.com/downloads/sound-effects/star-trek/tos/
-var audio = new bonsai.Audio(AUDIO_SRC).on('load', init).addTo(stage);
-
-audio.prepareUserEvent();
+var audio = new bonsai.Audio(AUDIO_SRC).addTo(stage).prepareUserEvent();
 
 var centerX = 700/2;
 var centerY = 400/2;
 
-function init() {
+(function drawButton() {
 
   var all = new Group().attr({
     x: centerX - (176/2),
@@ -110,7 +108,7 @@ function init() {
     audio.attr('time', currentTime / 1000);
   });
 
-}
+})();
 </script>
 
 <script>
