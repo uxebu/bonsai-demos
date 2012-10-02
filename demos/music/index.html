@@ -32,7 +32,15 @@ var AUDIO_SRC = [
 var AUDIO_LENGTH = 45000;
 
 // SOUNDS FROM http://www.mediacollege.com/downloads/sound-effects/star-trek/tos/
-var audio = new bonsai.Audio(AUDIO_SRC).addTo(stage).prepareUserEvent();
+
+var animationDisc, wantsToPlay = false, audioLoaded = false;
+var audio = new bonsai.Audio(AUDIO_SRC).addTo(stage).on('load', function() {
+  audioLoaded = true;
+  if (wantsToPlay) {
+    audio.play();
+    animationDisc.play();
+  }
+}).prepareUserEvent();
 
 var centerX = 700/2;
 var centerY = 400/2;
@@ -57,17 +65,25 @@ var centerY = 400/2;
     y: 59
   });
 
-  var animationDisc = new Animation('.6s', {
+  animationDisc = new Animation('.6s', {
     rotation: Math.PI*2
   }, {
     repeat: Infinity
   }).addSubject(disc);
 
   button.on('play', function() {
-    audio.play();
-    animationDisc.play();
+    wantsToPlay = true;
+
+    if (audioLoaded) {
+      audio.play();
+      animationDisc.play();
+    } else {
+      // Loading
+      // console.log("Loading………");
+    }
   });
   button.on('pause', function() {
+    wantsToPlay = false;
     audio.pause();
     animationDisc.pause();
   });
@@ -78,7 +94,7 @@ var centerY = 400/2;
   stage.on('tick', onTick);
 
   function onTick() {
-    if (button.isPlaying) {
+    if (audioLoaded && button.isPlaying) {
       // Add to currentTime on every tick (estimating where the audio is at)
       currentTime += +new Date - lastTickTime;
     }
